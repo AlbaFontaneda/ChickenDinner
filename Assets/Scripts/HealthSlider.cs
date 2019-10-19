@@ -5,7 +5,6 @@ public class HealthSlider : MonoBehaviour {
 
 
     public Health m_health;
-
     private UnityEngine.UI.Slider m_slider;
 
 	// Use this for initialization
