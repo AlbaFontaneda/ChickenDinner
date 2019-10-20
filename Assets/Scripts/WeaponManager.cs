@@ -30,24 +30,55 @@ public class WeaponManager : MonoBehaviour {
 	void Start () {
 
         // ## TO-DO 1 - Activar el primer arma de la lista, y establecerlo como arma activa. Pista: m_Weapons[0] ##
-
+        foreach (Transform weapon in transform)
+            weapon.gameObject.SetActive(false);
+        
+        m_ActiveWeapon = m_Weapons[m_DefaultWeaponIndex];
+        ManageWeapon(m_DefaultWeaponIndex);
     }
 	
 	// En el método Update estaremos leyendo de la entrada de usuario para ver qué tecla
 	// se pulsa. En caso de ser alguna numérica, gestionaremos las armas, teniendo cuidado
 	// de que sólo haya un arma activa en cada momento
 	void Update () {
-		
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+
+        int previousWeapon = m_Weapons.IndexOf(m_ActiveWeapon);
+        int nextWeapon = previousWeapon;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
             // ## TO-DO 3 - Llamar a ManageWeapon con el índice adecuado (0)
+            nextWeapon = 0;
 
         }
 		else if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
             // ## TO-DO 4 - Llamar a ManageWeapon con el índice adecuado (1)
+            nextWeapon = 1;
 
         }
+
+        //Al mover la rueda del ratón cambiamos el arma seleccionada.
+        //Si el valor es mayor al número de armas, seleccionamos la primera
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        {
+            if (previousWeapon >= transform.childCount - 1)
+                nextWeapon = 0;
+            else
+                nextWeapon++;
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        {
+            if (previousWeapon <= 0)
+                nextWeapon = m_Weapons.Count - 1;
+            else
+                nextWeapon--;
+        }
+
+        if (previousWeapon != nextWeapon)
+            ManageWeapon(nextWeapon);
+
     }
 
     // Dicho número indicará el índice del arma que se quiere activar/desacivar
@@ -62,6 +93,8 @@ public class WeaponManager : MonoBehaviour {
         // ---
         // Actualizar m_ActiveWeapon
 
-
+        m_ActiveWeapon.SetActive(false);
+        m_ActiveWeapon = m_Weapons[index];
+        m_ActiveWeapon.SetActive(true);        
     }
 }
