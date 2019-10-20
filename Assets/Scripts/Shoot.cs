@@ -81,6 +81,7 @@ public class Shoot : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.clip = m_ShootAudio;
     }
     /// <summary>
     /// En el método Update se consultará al Input si se ha pulsado el botón de disparo
@@ -99,8 +100,10 @@ public class Shoot : MonoBehaviour
             {
                 // ## TO-DO 5 - En función de si hay proyectil o no, usar la función de disparo
                 // con proyectil, o la de disparo con rayo ## 
-
-				ShootProjectile();
+                if (m_projectile != null)
+                    ShootProjectile();
+                else
+                    ShootRay();
                 // ## TO-DO 6 - Reiniciar el contador m_TimeSinceLastShot ## 
 
             }
@@ -110,6 +113,7 @@ public class Shoot : MonoBehaviour
                 m_IsShooting = true;
 
                 // ## TO-DO 7 Poner sonido de disparo.
+                audioSource.Play();
 
             }
 		}
@@ -118,6 +122,7 @@ public class Shoot : MonoBehaviour
             m_IsShooting = false;
 
             // ## TO-DO 8 Parar sonido de disparo.
+            audioSource.Stop();
 
         }
 
@@ -180,15 +185,23 @@ public class Shoot : MonoBehaviour
         // 1.- Lanzar un rayo utlizando para ello el módulo de física -> pista Physics.Ra...
         // 2.- Aplicar una fuerza en el punto de impacto.
         // 3.- Colocar particulas de chispas en el punto de impacto -> pista Instanciamos pero no nos preocupasmo del destroy porque el asset puede autodestruirse (componente particle animator).
-        
+        RaycastHit hit;
+        if (Physics.Raycast(m_ShootPoint.transform.position, m_ShootPoint.transform.forward, out hit, m_ShootRange)) {
+            Debug.Log(hit.transform.name);
+
+            GameObject sparkles = Instantiate(m_Sparkles, hit.point, Quaternion.identity);
+            sparkles.GetComponent<ParticleSystem>().Play();
+
+            if (hit.rigidbody)
+                hit.rigidbody.AddForceAtPosition(hit.transform.forward * m_ShootForce, hit.point);
+        }
     }
 
     //## TO-DO 3 Mostrar un puntero laser con la dirección de disparo.
     private void OnDrawGizmos()
     {
         if (m_ShootPoint != null)
-            Debug.DrawRay(m_ShootPoint.position, m_ShootPoint.forward * 2f,
-           Color.red);
+            Debug.DrawRay(m_ShootPoint.position, m_ShootPoint.forward * 4f, Color.red);
     }
 
     #endregion
