@@ -12,6 +12,7 @@ public class Death : MonoBehaviour {
     {
         m_audio = GetComponent<AudioSource>();
         // TO-DO 1 Buscar al GameManager y cachearlo
+        m_GameManager = GameObject.FindGameObjectWithTag("GameManager");
     }
 
     public virtual void OnDeath()
@@ -20,5 +21,6 @@ public class Death : MonoBehaviour {
         m_audio.clip = m_deathSound;
         m_audio.Play();
         // TO-DO 2 Respaunear usando el GameManager con el mensaje RespawnPlayer.
+        m_GameManager.SendMessage("RespawnPlayer");
     }
 }
