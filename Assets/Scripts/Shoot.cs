@@ -30,7 +30,6 @@ public class Shoot : MonoBehaviour
     /// <summary>
     /// Tiempo transcurrido entre disparos
     /// </summary>
-    [System.NonSerialized]
 	public float m_TimeBetweenShots = 0.25f;
 	
 	/// <summary>
@@ -65,6 +64,7 @@ public class Shoot : MonoBehaviour
 	/// <summary>
 	/// Tiempo transcurrido desde el último disparo
 	/// </summary>
+    ///
 	private float m_TimeSinceLastShot = 0;
 
     /// <summary>
@@ -80,6 +80,7 @@ public class Shoot : MonoBehaviour
 
     private void Start()
     {
+        m_TimeSinceLastShot = m_TimeBetweenShots;
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = m_ShootAudio;
     }
@@ -92,7 +93,7 @@ public class Shoot : MonoBehaviour
 
         //  ## TO-DO 4 - Actualizar el contador m_TimeSinceLastShot ## 
         // Para ello, habrá que sumarle el tiempo de ejecución del anterior frame
-
+        m_TimeSinceLastShot += Time.deltaTime;
 
         if (GetFireButton())
 		{
@@ -105,7 +106,7 @@ public class Shoot : MonoBehaviour
                 else
                     ShootRay();
                 // ## TO-DO 6 - Reiniciar el contador m_TimeSinceLastShot ## 
-
+                m_TimeSinceLastShot = 0;
             }
 
             if (!m_IsShooting)
@@ -122,7 +123,8 @@ public class Shoot : MonoBehaviour
             m_IsShooting = false;
 
             // ## TO-DO 8 Parar sonido de disparo.
-            audioSource.Stop();
+            if (m_projectile == null) 
+                audioSource.Stop();
 
         }
 
@@ -137,7 +139,10 @@ public class Shoot : MonoBehaviour
 	private bool CanShoot()
 	{
         //  ## TO-DO 8 - Comprobar si puedo disparar #
-        return true;
+        if (m_TimeBetweenShots > m_TimeSinceLastShot)
+            return false;
+        else
+            return true;
 	}
 	
     /// <summary>
@@ -192,8 +197,10 @@ public class Shoot : MonoBehaviour
             GameObject sparkles = Instantiate(m_Sparkles, hit.point, Quaternion.identity);
             sparkles.GetComponent<ParticleSystem>().Play();
 
-            if (hit.rigidbody)
-                hit.rigidbody.AddForceAtPosition(hit.transform.forward * m_ShootForce, hit.point);
+            if (hit.rigidbody) { 
+                Vector3 direction = hit.rigidbody.transform.position - hit.point;
+                hit.rigidbody.AddForceAtPosition(direction * m_ShootForce, hit.point);
+            }
         }
     }
 
