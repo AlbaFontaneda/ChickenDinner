@@ -15,7 +15,7 @@ public class DoorDamage : MonoBehaviour
 
     }
 
-    private void OnTriggerEnterr(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == m_player && m_door.DoorState == Door.State.CLOSING)
         {
