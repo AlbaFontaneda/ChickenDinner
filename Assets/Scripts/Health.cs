@@ -37,9 +37,8 @@ public class Health : MonoBehaviour {
         m_CurrentHealth -= amount;
         if (m_CurrentHealth <= 0)
         {
-            CharacterController player = GetComponent<CharacterController>();
-            player.enabled = false;
-            this.gameObject.SendMessage("OnDeath", SendMessageOptions.DontRequireReceiver);
+            
+            gameObject.SendMessage("OnDeath", SendMessageOptions.DontRequireReceiver);
         }
 
 

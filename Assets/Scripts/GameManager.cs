@@ -45,11 +45,9 @@ public class GameManager : MonoBehaviour {
 	{
 		if(!m_InitialSpawnPoint)
 			Debug.LogWarning("No se ha asignado un punto de spawn inicial");
-		
-		// Al principio, el punto incial será el punto actual de spawn
-		m_CurrentSpawnPoint = m_InitialSpawnPoint;
-		
 
+        // Al principio, el punto incial será el punto actual de spawn
+        SetCurrentSpawnPoint(m_InitialSpawnPoint);
     }
 
 	/// <summary>
@@ -58,8 +56,9 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 
         // ## TO-DO 1 - Buscar al player y guardarlo en m_Player.
-
-        RespawnPlayer();
+        GameObject gm = GameObject.FindGameObjectWithTag("Player");
+        m_Player = gm.GetComponent<CharacterController>();
+        
 	}
 	
 	/// <summary>
@@ -92,7 +91,9 @@ public class GameManager : MonoBehaviour {
 	{
         // Colocamos al player en el punto de spawn actual
         // ## TO-DO 2 - Teletransportar al player al ultimo punto de reespawn y reestaurar su vida. Activar y desactivar el Character Contorller para que este no restee la posición.
-
+        m_Player.enabled = false;
+        m_Player.transform.position = m_CurrentSpawnPoint.position;
+        m_Player.enabled = true;
     }
 	
 	

@@ -107,16 +107,16 @@ public class Shoot : MonoBehaviour
                     ShootRay();
                 // ## TO-DO 6 - Reiniciar el contador m_TimeSinceLastShot ## 
                 m_TimeSinceLastShot = 0;
-            }
 
-            if (!m_IsShooting)
-            {
-                m_IsShooting = true;
+                if (!m_IsShooting)
+                {
+                    m_IsShooting = true;
 
-                // ## TO-DO 7 Poner sonido de disparo.
-                audioSource.Play();
+                    // ## TO-DO 7 Poner sonido de disparo.
+                    audioSource.Play();
 
-            }
+                }
+            }     
 		}
         else if (m_IsShooting)
         {
